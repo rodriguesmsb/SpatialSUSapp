@@ -63,25 +63,28 @@ body {
 }
 
 .header {
-    background-color: #222222;
-    height: 150px;
+    background-color: #993404;
+    height: 100px;
     padding: 16px 0 0 0;
 }
 
 .header-title{
     font-size: 48px;
-    color: #74c476;
-    text-align: center;
+    font-weight: bold;
+    color: #f7f7f7;
+    text-align: left;
     margin-top: -5px;
+    font-family:"Roboto Condensed", sans-serif;
 }
 
 .home-text{
-    color: #006d2c;
+    color: #f7f7f7;
     text-decoration: none;
     font-weight: bold;
     font-size: 30px;
     font-family:"Roboto Condensed", sans-serif;
-    text-align: center;
+    margin-top: -35px;
+    text-align: left;
 }
 
 .link-text{

@@ -11,7 +11,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from app import app
-
+from apps import inp
 
 ###Add code to use external css
 external_stylesheets = [
@@ -44,7 +44,7 @@ def display_page(pathname):
     elif pathname == "#":
         return 404
     else:
-        return 
+        return inp.layout
 
 if __name__ == '__main__':
     app.run_server(debug = True)
