@@ -10,9 +10,12 @@ body {
 }
 
 .col{
-    width: 8.33%;
+    width: 30%;
     height: 100%;
     text-align: center;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #d95f0e;
 }
 
 .two-col{
@@ -41,26 +44,6 @@ body {
     color:black;
 }
 
-.emoji {
-    font-size: 48px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.figure{
-    width: 400px;
-    height: 400px;
-    display: flex;
-}
-
-.footer{
-    background-color: #222222;
-    height: 150px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-}
 
 .header {
     background-color: #993404;
@@ -138,7 +121,7 @@ body {
 
 .section{
     width: 12;
-    height: 300;
+    height: 800px;
     display: flex;
     margin-top: 50px;
     justify-content: space-evenly;
