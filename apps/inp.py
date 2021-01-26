@@ -21,4 +21,5 @@ layout = html.Div(
             className = "header"
         )
     ],
+    className = "body"
 )
