@@ -7,11 +7,7 @@ Created on Tue Jan 26 2021
 """
 import dash_html_components as html
 import dash_core_components as dcc
-import dash_bootstrap_components as dbc
-
-
-
-
+from components import sec_inp
 
 layout = html.Div(
     id = "main-body",
@@ -24,32 +20,7 @@ layout = html.Div(
             ],
             className = "header"
         ),
-        html.Section(
-            id = "painel",
-            children = [
-                html.Div(
-                    id = "shapefile",
-                    children = [
-                        html.P("1. Carregar mapa (json)", className = "input-mark"),
-                        html.P("Carregar arquivo json ou geosjon", className = "input-desc"),
-                        dcc.Upload(
-                            id = "upload-data",
-                            children = 
-                                dbc.Button(
-                                    id = "file-select",
-                                    children = "Select file", 
-                                    className = "menu-icon"),
-                            multiple = True)
-
-                        
-                    ],
-                    className = "col"
-        ),
-                html.Div(id = "up_data", children = [], className = "col"),
-                html.Div(id = "sel_an", children = [], className = "col"),
-            ],
-            className = "section"
-        ),
+        sec_inp.layout,
         html.Div(
             children = [
                 html.P("Dados", className = "input-mark"),
@@ -57,7 +28,6 @@ layout = html.Div(
                 
             ])
         
-
     ],
     className = "body"
 )
