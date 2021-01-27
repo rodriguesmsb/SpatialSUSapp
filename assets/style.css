@@ -4,6 +4,12 @@ body {
     background-color: #f0f0f0;
 }
 
+.button {
+    border: 1px solid #333;
+    padding: 10px;
+    margin: 5px;
+}
+
 .card {
     margin-bottom: 24px;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
@@ -12,7 +18,7 @@ body {
 .col{
     width: 30%;
     height: 100%;
-    text-align: center;
+    text-align: left;
     border-radius: 5px;
     border-style: solid;
     border-color: #d95f0e;
@@ -47,7 +53,7 @@ body {
 
 .header {
     background-color: #993404;
-    height: 10%;
+    height: 10vh;
     padding: 16px 0 0 0;
 }
 
@@ -68,6 +74,24 @@ body {
     font-family:"Roboto Condensed", sans-serif;
     margin-top: -35px;
     text-align: left;
+}
+
+.input-desc{
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+    font-family:"Roboto Condensed", sans-serif;
+    margin-left: 20px;
+    margin-top: -15px;
+}
+
+.input-mark{
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 30px;
+    font-family:"Roboto Condensed", sans-serif;
+    margin-left: 20px;
 }
 
 .link-text{
@@ -100,8 +124,10 @@ body {
 }
 
 .menu-icon{
-    width:15%;
-    height:100%;
+    width: 15vh;
+    height: 30px;
+    margin-left: 20px;
+    border-radius: 5px;
 }
 
 .menu-title {
@@ -121,7 +147,7 @@ body {
 
 .section{
     width: 12;
-    height: 800px;
+    height: 80vh;
     display: flex;
     margin-top: 50px;
     justify-content: space-evenly;

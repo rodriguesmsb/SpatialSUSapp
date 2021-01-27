@@ -9,9 +9,12 @@ Created on Tue Jan 26 2021
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from app import app
 from apps import inp
+import io
+import base64
 
 ###Add code to use external css
 external_stylesheets = [
@@ -35,6 +38,8 @@ app.layout = html.Div([
 ])
 
 
+
+
 #define all calllback that will be used
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
@@ -46,5 +51,16 @@ def display_page(pathname):
     else:
         return inp.layout
 
+
+def parse_contents(contents, filename):
+    content_type, content_string = contents.split(',')
+    decode  = base64.b64decode(content_string)
+    try:
+        df = pd.read_csv(
+            io.StringIO(decode.decode("utf-8")))
+    except:
+        pass
+    return df
+    
 if __name__ == '__main__':
     app.run_server(debug = True)
