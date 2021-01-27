@@ -11,6 +11,8 @@ import dash_bootstrap_components as dbc
 
 
 
+
+
 layout = html.Div(
     id = "main-body",
     children = [
@@ -31,13 +33,13 @@ layout = html.Div(
                         html.P("1. Carregar mapa (json)", className = "input-mark"),
                         html.P("Carregar arquivo json ou geosjon", className = "input-desc"),
                         dcc.Upload(
-                            id = "upload-json",
-                            children = [
+                            id = "upload-data",
+                            children = 
                                 dbc.Button(
                                     id = "file-select",
                                     children = "Select file", 
-                                    className = "menu-icon")]
-                            )
+                                    className = "menu-icon"),
+                            multiple = True)
 
                         
                     ],
@@ -47,12 +49,23 @@ layout = html.Div(
                 html.Div(id = "sel_an", children = [], className = "col"),
             ],
             className = "section"
-        )
+        ),
+        html.Div(
+            children = [
+                html.P("Dados", className = "input-mark"),
+                html.Div(id = "output-data-upload")
+                
+            ])
         
 
     ],
     className = "body"
 )
+
+
+
+
+
 
 
 
