@@ -12,9 +12,8 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from app import app
-from apps import inp, dash_functions
+from apps import home
 
-path = "data/"
 
 ###Add code to use external css
 external_stylesheets = [
@@ -33,7 +32,6 @@ app.title = "Data visualization"
 
 app.layout = html.Div([
     dcc.Location(id = 'url', refresh = False),
-    html.Div(id = 'output-data-upload'),
     html.Div(id = 'page-content')
 ])
 
@@ -46,21 +44,7 @@ def display_page(pathname):
     elif pathname == "#":
         return 404
     else:
-        return inp.layout
-
-@app.callback(Output('output-data-upload', 'children'),
-              Input('upload-data', 'contents'),
-              State('upload-data', 'filename'))
-def update_output(list_of_contents, list_of_names):
-    if list_of_contents is not None:
-        children = [
-            dash_functions.parse_contents(c, n) for c, n in
-            zip(list_of_contents, list_of_names)]
-        return children
-
-
-
-
+        return home.layout
 
 if __name__ == '__main__':
     app.run_server(debug = True)
