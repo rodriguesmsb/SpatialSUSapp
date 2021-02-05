@@ -12,21 +12,15 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from app import app
-from apps import home
+from apps import viz
 
 
 ###Add code to use external css
-external_stylesheets = [
-    {
-        "href": "https://fonts.googleapis.com/css2?"
-                "family=Lato:wght@400;700&display=swap",
-        "rel": "stylesheet",
-    },
-]
-
 
 ###Create a instance of Dash class
-app = dash.Dash(__name__, external_stylesheets = [external_stylesheets])
+app = dash.Dash(__name__, 
+external_stylesheets = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
+                        "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap"])
 app.title = "Data visualization"
 
 
@@ -44,7 +38,7 @@ def display_page(pathname):
     elif pathname == "#":
         return 404
     else:
-        return home.layout
+        return viz.layout
 
 if __name__ == '__main__':
     app.run_server(debug = True)
