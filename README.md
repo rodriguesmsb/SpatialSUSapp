@@ -1,3 +1,4 @@
 # SpatialSUSapp
 
-A dash app to visualize adminsitrative brazilian data
+A dash app to visualize adminsitrative brazilian data.
+
