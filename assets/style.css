@@ -5,94 +5,76 @@
 }
 
 body{
-    background-color: whitesmoke;
-
+  background-color: whitesmoke;
 }
 
 .container{
-    display: grid;
-    background-color: whitesmoke;
-    height:97vh;
-    grid-template-rows: auto auto 1fr auto auto auto;
-    gap: 24px;
+  display: grid;
+  background-color: whitesmoke;
+  height:97vh;
+  /*grid-template-rows: auto auto 1fr auto auto auto;*/
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto auto 1fr auto;
+  gap: 24px;
 }
 
 .header{
-    border: 1px solid tomato;
-    border-radius: 8px;
-    background-color: white;
+  /*Give to header  12 coluns in the first row*/
+  grid-column: 1 / span 12;
+  border: 1px solid tomato;
+  border-radius: 8px;
+  background-color: white;
 
 }
 
 .nav-bar{
-    border: 1px solid tomato;
-    border-radius: 8px;
-    background-color: white;
+  /*Nav bar should start at third column and end at sixth*/
+  grid-column: 3 / span 6;
+  border: 1px solid tomato;
+  border-radius: 8px;
+  background-color: white;
 }
 
 .main-body{
-    border: 1px solid tomato;
-    border-radius: 8px;
-    background-color: white;
+  /*
+  Main body will start and end at same position as nav bar hover the 1fr
+  attributed at third row will allow it expand as much as it can
+  
+  */
+  grid-column: 3 / span 6;
+  border: 1px solid tomato;
+  border-radius: 8px;
+  background-color: white;
 }
 
 .side-bar{
-    border: 1px solid tomato;
-    border-radius: 8px;
-    background-color: white;
+  /*
+  Side bar will get two rows and two columns
+  
+  */
+  grid-row: 2 / 4;
+  grid-column: 1 / span 2;
+  border: 1px solid tomato;
+  border-radius: 8px;
+  background-color: white;
 }
 
 .side-graph{
-    border: 1px solid tomato;
-    border-radius: 8px;
-    background-color: white;
+  /*
+  Side graph will the same rows as side-menu and
+  the four last columns
+  
+  */
+  grid-column: 9 / span 4;
+  grid-row: 2 / 4;
+  border: 1px solid tomato;
+  border-radius: 8px;
+  background-color: white;
 }
 
 .footer{
-    border: 1px solid tomato;
-    border-radius: 8px;
-    background-color: white;
-}
-
-
-@media (min-width: 720px) {
-    .container {
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: auto auto 1fr auto;
-    }
-}
-
-
-
-
-
-@media (min-width: 1020px) {
-
-    .header {
-        grid-column: 1 / span 12;
-      }
-
-    .nav-bar{
-      grid-column: 3 / span 6;
-    }
-  
-    
-    .main-body {
-      grid-column: 3 / span 6;
-    }
-  
-   
-    .side-bar {
-      grid-row: 2 / 4;
-      grid-column: 1 / span 2;
-    }
-  
-    .side-graph {
-      grid-column: 9 / span 4;
-      grid-row: 2 / 4;
-    }
-  
-    .footer {
-      grid-column: 1 / span 12;
-    }
+  grid-column: 1 / span 12; 
+  border: 1px solid tomato;
+  border-radius: 8px;
+  background-color: white;
 }
