@@ -93,3 +93,18 @@ body{
   border: 1px solid rgb(0, 195, 255);
   grid-column: 1 / span 6;
 }
+
+.table{
+  display: grid;
+  border: 1px solid rgb(0, 195, 255);
+  grid-column: 7 / span 6;
+
+}
+
+.time-series{
+  display: grid;
+  border: 1px solid rgb(0, 195, 255);
+  grid-row: 2;
+  grid-column: 1 / span 12;
+
+}

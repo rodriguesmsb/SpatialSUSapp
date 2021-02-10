@@ -32,8 +32,19 @@ layout = html.Div(
                     children = [
                         html.Div(
                             id = "map",
-                            children = ["map"],
-                            className ="leaflet-map")
+                            children = ["Leaflet"],
+                            className ="leaflet-map"),
+                        html.Div(
+                            id = "table",
+                            children = ["Summary statistics"],
+                            className = "table"
+
+                        ),
+                        html.Div(
+                            id = "time-series",
+                            children = ["Time-series"],
+                            className = "time-series"
+                        )
 
                     ],
                     className = "wrapper"
