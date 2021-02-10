@@ -90,7 +90,6 @@ body{
 
 .leaflet-map{
   display: grid;
-  border: 1px solid rgb(0, 195, 255);
   grid-column: 1 / span 6;
 }
 

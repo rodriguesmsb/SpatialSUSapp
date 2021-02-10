@@ -32,7 +32,13 @@ layout = html.Div(
                     children = [
                         html.Div(
                             id = "map",
-                            children = ["Leaflet"],
+                            children = [
+                                dl.Map(
+                                    center = [-20, -54],
+                                    zoom = 3.3,
+                                    children = [dl.TileLayer()])
+                                
+                            ],
                             className ="leaflet-map"),
                         html.Div(
                             id = "table",
