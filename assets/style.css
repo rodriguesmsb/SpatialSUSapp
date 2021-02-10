@@ -91,6 +91,7 @@ body{
 .leaflet-map{
   display: grid;
   grid-column: 1 / span 6;
+  border-radius: 8px;
 }
 
 .table{

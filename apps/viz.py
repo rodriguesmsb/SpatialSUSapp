@@ -35,8 +35,9 @@ layout = html.Div(
                             children = [
                                 dl.Map(
                                     center = [-20, -54],
-                                    zoom = 3.3,
-                                    children = [dl.TileLayer()])
+                                    zoom = 3.2,
+                                    children = [dl.TileLayer()],
+                                    style = {"border-radius":"8px"})
                                 
                             ],
                             className ="leaflet-map"),
