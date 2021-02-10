@@ -8,6 +8,7 @@ Created on Tue Jan 26 2021
 
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_leaflet as dl
 
 
 layout = html.Div(
@@ -25,7 +26,22 @@ layout = html.Div(
         ),
         html.Div(
             id = "main-body",
-            children = ["Main body"],
+            children = [
+                html.Div(
+                    id = "wrapper",
+                    children = [
+                        html.Div(
+                            id = "map",
+                            children = ["map"],
+                            className ="leaflet-map")
+
+                    ],
+                    className = "wrapper"
+                )
+                
+
+
+            ],
             className = "main-body"
         ),
 
