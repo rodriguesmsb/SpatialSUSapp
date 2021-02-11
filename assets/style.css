@@ -83,28 +83,30 @@ body{
 .wrapper{
   display: grid;
   grid-template-columns: repeat(12,1fr);
-  grid-template-rows: auto auto;
+  grid-template-rows: repeat(12,auto);
   height: 100%;
 
 }
 
 .leaflet-map{
   display: grid;
-  grid-column: 1 / span 6;
+  grid-column: 1 / span 7;
+  grid-row: 1/ span 7;
   border-radius: 8px;
 }
 
 .table{
   display: grid;
   border: 1px solid rgb(0, 195, 255);
-  grid-column: 7 / span 6;
+  grid-column: 8 / span 5;
+  grid-row: 1/ span 7;
 
 }
 
 .time-series{
   display: grid;
   border: 1px solid rgb(0, 195, 255);
-  grid-row: 2;
+  grid-row: 8 / span 5;
   grid-column: 1 / span 12;
 
 }
