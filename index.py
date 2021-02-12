@@ -23,6 +23,9 @@ external_stylesheets = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7
                         "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap"])
 app.title = "Data visualization"
 
+import pandas as pd
+data = pd.read_csv("data/data.csv")
+print(data.head())
 
 app.layout = html.Div([
     dcc.Location(id = 'url', refresh = False),

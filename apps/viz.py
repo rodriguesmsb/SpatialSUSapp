@@ -11,6 +11,11 @@ import dash_html_components as html
 import dash_leaflet as dl
 
 
+import pandas as pd
+data = pd.read_csv("data/data.csv")
+print(data.head())
+
+
 layout = html.Div(
     id = "container",
     children = [
