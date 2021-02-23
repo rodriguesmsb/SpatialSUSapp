@@ -20,23 +20,70 @@ h2{
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: auto auto 1fr auto;
   gap: 24px;
+  max-width: 100%
 }
 
 .header{
   /*Give to header  12 coluns in the first row*/
   grid-column: 1 / span 12;
-  border: 1px solid tomato;
+  border: 3px solid tomato;
   border-radius: 8px;
   background-color: white;
 
 }
 
-.nav-bar{
-  /*Nav bar should start at third column and end at sixth*/
-  grid-column: 4 / span 6;
-  border: 1px solid tomato;
+.header-cotainer{
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.header-logo{
+  width: 100px;
+  height: 100px;
+  margin-left: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  grid-column: 13 / span 1;
+}
+
+.header-img{
+  width: 50px;
+  height: 50px;
+  margin-left: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.header-title{
+  display: grid;
+  grid-column: 2 / span 3;
+  margin-left: -100px;
+}
+
+
+
+.info-bar{
+  /*info bar should start at third column and end at sixth*/
+  grid-column: 1 / span 3;
   border-radius: 8px;
   background-color: whitesmoke;
+}
+
+
+.info-bar-cotainer{
+  display: grid;
+  grid-template-columns: repeat(3,auto);
+  gap: 6px;
+  background-color: whitesmoke;
+  border-radius: 8px;
+}
+
+
+.info-item{
+  display: grid;
+  background-color: white;
+  border-radius: 8px;
+  border: 3px solid tomato;
 }
 
 .main-body{
@@ -46,7 +93,8 @@ h2{
   
   */
   grid-column: 4 / span 6;
-  border: 1px solid tomato;
+  grid-row: 2 / 4;
+  border: 3px solid tomato;
   border-radius: 8px;
   background-color: whitesmoke;
 }
@@ -56,11 +104,28 @@ h2{
   Side bar will get two rows and two columns
   
   */
-  grid-row: 2 / 4;
+  grid-row: 3 / 4;
   grid-column: 1 / span 3;
-  border: 1px solid tomato;
+  border: 3px solid tomato;
   border-radius: 8px;
   background-color: white;
+}
+
+.side-bar-container{
+  display: grid;
+  grid-template-rows: repeat(12, auto);
+}
+
+.side-bar-item{
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+}
+
+.side-bar-text{
+  font-weight: 600;
+  margin-left: 10px;
 }
 
 .side-graph{
@@ -71,18 +136,35 @@ h2{
   */
   grid-column: 10 / span 3;
   grid-row: 2 / 4;
-  border: 1px solid tomato;
+  border: 3px solid tomato;
   border-radius: 8px;
   background-color: white;
 }
+
+.side-graph-container{
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  height: 100%;
+  gap: 6px;
+}
+
 
 .footer{
   grid-column: 1 / span 12; 
-  border: 1px solid tomato;
+  border: 3px solid tomato;
   border-radius: 8px;
   background-color: white;
+  display: block;
 }
 
+.footer-container{
+  display: grid;
+  grid-template-columns: repeat(12,1fr);
+}
+
+.shutdown-button{
+  grid-column: 13/ span 1;
+}
 
 .wrapper{
   display: grid;
@@ -103,11 +185,9 @@ h2{
 
 .table{
   display: grid;
-  border: 1px solid rgb(0, 195, 255);
-  grid-column: 8 / span 5;
   grid-row: 1/ span 7;
   background-color: white;
-
+  border: 0;
 }
 
 .time-series{
@@ -124,19 +204,6 @@ h2{
   width: 99%;
 }
 
-.nav-bar-div{
-  display: grid;
-  grid-template-columns: repeat(6,2fr);
-  gap: 6px;
-  background-color: whitesmoke;
-  border-radius: 8px;
-}
-
-.nav-item{
-  display: grid;
-  background-color: white;
-  border-radius: 8px;
-}
 
 .card-img{
   display: block;
@@ -147,8 +214,7 @@ h2{
   margin-right: auto;
 }
 
+
 .card-text{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  display: block;table
 }

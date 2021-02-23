@@ -6,15 +6,62 @@ Created on Tue Jan 26 2021
 @author: Moreno rodrigues rodriguesmsb@gmail.com
 """
 
+import os
 import dash_core_components as dcc
 import dash_table as dt
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_leaflet as dl
-
-
+from dash_leaflet import express as dlx
 import pandas as pd
+from aux.functions import functions
+import json
+import plotly.express as px
 
+
+path_to_data = "data/data.csv"
+path_to_json = "conf/conf.json"
+path_to_images = "assets/"
+
+
+conf = functions(conf_file = path_to_json, data = path_to_data)
+json_map = path_to_images + "maps/geojs-" + conf.set_json_map() + "-mun.json"
+
+
+min_time = conf.return_time_range()[0]
+max_time = conf.return_time_range()[1]
+title  = conf.return_title()
+
+
+data_hor_bar = conf.read_data()
+data_hor_bar = data_hor_bar.groupby([conf.return_area()]).size().reset_index(name = "count")
+data_hor_bar = data_hor_bar.sort_values(by = ["count"], ascending = False)
+data_hor_bar = data_hor_bar.head()
+
+
+def plot_hor_bar():
+    data_hor_bar[conf.return_area()] = data_hor_bar[conf.return_area()].astype("str") 
+    fig =  px.bar(data_hor_bar, x = "count", y = data_hor_bar[conf.return_area()], orientation='h')
+    return fig
+
+######Add functions to json here
+with open(json_map, 'r') as f:
+    json_data = json.load(f)
+
+    
+with open(json_map, 'w') as m:
+    json.dump(json_data, m, indent = 4)
+
+##### load json to plot here
+json_map = "assets/maps/geojs-" + conf.set_json_map() + "-mun.json"
+
+#### define function to hover on map
+def get_info(feature = None):
+    header = [html.H4("Municipio")]
+    if not feature:
+        return header + ["Hoover over a state"]
+    return header + [html.B(feature["properties"]["name"]), html.Br()]
+#"{:} people / mi".format(feature["properties"]["codmunres"]), html.Sup("2")
 
 cont = dbc.Card(
     [
@@ -22,13 +69,13 @@ cont = dbc.Card(
         dbc.CardBody(
             [
                 html.P(
-                    "Contagem"
+                    "Casos: " + str(conf.return_data_size())
                 )
             ],
             className = "card-text"
         ),
     ],
-    className = "nav-item",
+    className = "info-item",
 )
 
 date_range = dbc.Card(
@@ -43,7 +90,7 @@ date_range = dbc.Card(
             className = "card-text"
         ),
     ],
-    className = "nav-item",
+    className = "info-item",
 )
 
 
@@ -59,10 +106,8 @@ time_unit = dbc.Card(
             className = "card-text"
         ),
     ],
-    className = "nav-item",
+    className = "info-item",
 )
-
-
 
 layout = html.Div(
 
@@ -72,11 +117,28 @@ layout = html.Div(
         ###Header
         html.Div(
             id = "header",
-            children = ["header"],
+            children = [
+                html.Div(
+                    children = [
+                        html.Img(
+                            src = functions.encode_image(path_to_images + "brazil.png"), className = "header-img"),
+                        html.H1(
+                            title,
+                            className = "header-title"
+                        ),
+                        html.A(html.Img(
+                            src = functions.encode_image(path_to_images + "cidacs.jpg"), className = "header-logo"),
+                            href = "https://cidacs.bahia.fiocruz.br/",
+                            style ={"grid-column":"12 / span 1", "display":"grid"}
+                        )
+                    ],
+                    className = "header-cotainer"
+                )
+            ],
             className = "header"
         ),
 
-        ###Navigation menu
+        ###information menu
         html.Div(
             id = "nav-bar",
             children = [
@@ -86,11 +148,11 @@ layout = html.Div(
                         date_range,
                         time_unit
                     ],
-                    className = "nav-bar-div"
+                    className = "info-bar-cotainer"
                 )
                 
             ],
-            className = "nav-bar"
+            className = "info-bar"
         ),
 
         ###Main graphs
@@ -104,20 +166,31 @@ layout = html.Div(
                             id = "map",
                             children = [
                                 dl.Map(
-                                    center = [-20, -54],
-                                    zoom = 3.2,
-                                    children = [dl.TileLayer()],
+                                    center = [-16, -52],
+                                    zoom = 4,
+                                    children = [
+                                        dl.TileLayer(),
+                                        dl.GeoJSON(
+                                            url = json_map,
+                                            id = "geojson",
+                                            zoomToBoundsOnClick = False),
+                                        html.Div(
+                                            children = get_info(), 
+                                            id = "info", className = "info",
+                                            style = {"position": "absolute", "top": "10px", "right": "10px", "z-index": "1000"})],
                                     style = {"border-radius":"8px"})
                                 
                             ],
                             className ="leaflet-map"),
                         html.Div(
-                            id = "table",
-                            children = [dt.DataTable(
-                                id = "table"
-                            )
-
-                            ],
+                            children = dt.DataTable(
+                                id = "data_table",
+                                columns=[{"id": " ", "name": " "},
+                                         {"id": "count", "name": "Observado"},
+                                         {"id": "expected", "name": "Esperado"},
+                                         {"id": "rr", "name": "RR"}],
+                                data = []
+                                ),
                             className = "table"
 
                         ),
@@ -126,7 +199,6 @@ layout = html.Div(
                             children = [
                                 dcc.Graph(
                                     id = "time-series-cases",
-                                    config = {"displayModeBar": False},
                                     className = "ts-graph"
                                 )
                             ],
@@ -142,15 +214,95 @@ layout = html.Div(
             ],
             className = "main-body"
         ),
-
+        
+        #Customize side-bar
         html.Div(
             id = "side-bar",
-            children = ["Side bar"],
+            children = [
+                html.Div(
+                    children = [
+                        html.Br(),
+                        html.Br(),
+                        html.Label(
+                            ["Selecione uma variável", 
+                             dcc.Dropdown(id = "var-select", className = "side-bar-item", multi = False)],
+                             className = "side-bar-text"
+                             ),
+                        html.Br(),
+                        html.Br(),
+                        html.Label(
+                            ["Selecione o intervalo de tempo",
+                            dcc.RangeSlider(
+                                id = "range-select",
+                                min = min_time,
+                                max = max_time,
+                                step = 1,
+                                marks = {
+                                    min_time: {'label': str(min_time), 'style': {'color': '#77b0b1'}},
+                                    max_time: {'label': str(max_time), 'style': {'color': '#77b0b1'}}
+
+                                },
+                                value = [min_time, max_time],
+                                className = "side-bar-item")
+                                ],
+                                className = "side-bar-text"
+                                ),
+                        html.Br(),
+                        html.Br(),
+                        html.Label(
+                            ["Selecionar covariável 1",
+                            dcc.Dropdown(
+                                id = "var_cat",
+                                options = [
+                                    {"label": conf.return_cat()[0], "value": conf.return_cat()[0]},
+                                    {"label": conf.return_cat()[1], "value": conf.return_cat()[1]}
+                                ],
+                                value = None,
+                                multi = False
+                            ),
+                            ],
+                            className = "side-bar-text"
+                        ),
+                        html.Br(),
+                        html.Br(),
+                        html.Label(
+                            ["Selecionar covariável 2",
+                            dcc.Dropdown(
+                                id = "var_num",
+                                options = [
+                                    {"label": conf.return_num()[0], "value": conf.return_num()[0]},
+                                    {"label": conf.return_num()[1], "value": conf.return_num()[1]}
+                                ],
+                                value = None,
+                                multi = False
+                            ),
+                            ],
+                            className = "side-bar-text"
+                        )
+                        
+                    ],
+                    className = "side-bar-container"
+                )
+            ],
             className = "side-bar"
         ),
+
+        #customize side graph
         html.Div(
-            id = "sid-graph",
-            children = ["Side Graph"],
+            id = "side-graph",
+            children = [
+                html.Div(
+                    children = [
+                        dcc.Graph(
+                            id = "hor_bar",
+                            figure = plot_hor_bar(),
+                            className = "side-graph-item"),
+                        dcc.Graph(id = "donut_plot", className = "side-graph-item")
+                    ],
+                    className = "side-graph-container"
+
+                )
+            ],
             className = "side-graph"
         ),
 
@@ -159,13 +311,13 @@ layout = html.Div(
             children = [
                 html.A(
                     children = html.I(className="fa fa-github"),
-                    href ="#"
-                )
+                    href ="#")
             ],
             className = "footer"
         )
     ],
     className = "container"
 )
+
 
 
