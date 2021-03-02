@@ -311,7 +311,7 @@ layout = html.Div(
             children = [
                 html.A(
                     children = html.I(className="fa fa-github"),
-                    href ="#")
+                    href ="https://github.com/rodriguesmsb/SpatialSUSapp")
             ],
             className = "footer"
         )
