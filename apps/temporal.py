@@ -49,7 +49,14 @@ layout = html.Div(
             className = "time-series-body-container"
         ),
         html.Div(
-            children = ["Footer"],
+            children = [
+                html.Div(
+                    children = [
+                         html.A(
+                            children = html.I(className="fa fa-github"),
+                            href ="https://github.com/rodriguesmsb/SpatialSUSapp")
+                    ])
+            ],
             className = "time-series-footer-container"
         )
     ],
