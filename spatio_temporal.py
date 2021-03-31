@@ -7,6 +7,7 @@ Created on Tue Jan 26 2021
 """
 
 
+
 import dash
 import os
 import dash_core_components as dcc
@@ -16,6 +17,7 @@ import dash_html_components as html
 import dash_leaflet as dl
 from dash_leaflet import express as dlx
 from dash.dependencies import Input, Output, State
+from dash_extensions.javascript import Namespace, arrow_function
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -25,7 +27,7 @@ import numpy as np
 
 
 
-### Indicates path
+### Indicates patch
 path_to_data = "data/data.csv"
 path_to_json = "conf/conf.json"
 path_to_images = "assets/"
@@ -44,12 +46,19 @@ data = conf.read_data()
 data["date"] = conf.format_date(data[conf.return_time()])
 ts = data.groupby([conf.return_area(), "date"]).size().reset_index(name = "count")
 
+print(data.groupby([conf.return_area()]).size().reset_index(name = "count"))
+
 
 
 with open(json_map, "r") as f:
     json_data = json.load(f)
 
+for i in range(0,len(json_data["features"])):
 
+    cases = {"cases": 0}
+    json_data["features"][i]['properties'].update(cases)
+
+print(json_data["features"][0]['properties']["cases"])
 
 ### Define functions that will be used on callbacks
 
@@ -87,11 +96,26 @@ external_stylesheets = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7
 app.title = "Data visualization"
 
 
+##options
+classes = [0, 10, 20, 50, 100, 200, 500, 1000]
+colorscale = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026']
+style = dict(weight=2, opacity=1, color='blue', dashArray='3', fillOpacity=0.7)
+
+# Create colorbar.
+ctg = ["{}+".format(cls, classes[i + 1]) for i, cls in enumerate(classes[:-1])] + ["{}+".format(classes[-1])]
+colorbar = dlx.categorical_colorbar(categories=ctg, colorscale=colorscale, width=300, height=30, position="bottomleft")
+
+ns = Namespace("dlx", "choropleth")
 ### Define layouts
 geojson = dl.GeoJSON(
-    data = json_data, 
+    data = json_data,
+    options=dict(style=ns("style")),
     zoomToBoundsOnClick = False,
+    hoverStyle=arrow_function(dict(weight=2, color='#666', dashArray='', fillOpacity=0.2)),  # style applied on hover
+    hideout=dict(colorscale=colorscale, classes=classes, style=style, colorProp = "cases"),
     id = "geojson")
+
+
 
 
 cont = dbc.Card(
@@ -202,6 +226,7 @@ app.layout = html.Div(
                                     children = [
                                         dl.TileLayer(),
                                         geojson,
+                                        colorbar,
                                         html.Div(
                                             children = get_info(), 
                                             id = "info", className = "info",
@@ -411,4 +436,4 @@ def update_donut(feature, selected_var):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
