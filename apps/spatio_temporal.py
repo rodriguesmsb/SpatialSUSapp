@@ -13,10 +13,10 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_leaflet as dl
 from dash_leaflet import express as dlx
+import plotly.express as px
 import pandas as pd
 from aux.functions import functions
 import json
-import plotly.express as px
 
 
 path_to_data = "data/data.csv"
@@ -27,33 +27,28 @@ path_to_images = "assets/"
 conf = functions(conf_file = path_to_json, data = path_to_data)
 json_map = path_to_images + "maps/geojs-" + conf.set_json_map() + "-mun.json"
 
-
-min_time = conf.return_time_range()[0]
-max_time = conf.return_time_range()[1]
-title  = conf.return_title()
-
+min_time = int(conf.return_time_range()[0])
+max_time = int(conf.return_time_range()[-1])
 
 data_hor_bar = conf.read_data()
 data_hor_bar = data_hor_bar.groupby([conf.return_area()]).size().reset_index(name = "count")
 data_hor_bar = data_hor_bar.sort_values(by = ["count"], ascending = False)
 data_hor_bar = data_hor_bar.head()
 
+# def plot_hor_bar():
+#     data_hor_bar[conf.return_area()] = data_hor_bar[conf.return_area()].astype("str") 
+#     fig =  px.bar(data_hor_bar, x = "count", y = data_hor_bar[conf.return_area()], orientation='h')
+#     return fig
 
-def plot_hor_bar():
-    data_hor_bar[conf.return_area()] = data_hor_bar[conf.return_area()].astype("str") 
-    fig =  px.bar(data_hor_bar, x = "count", y = data_hor_bar[conf.return_area()], orientation='h')
-    return fig
-
-######Add functions to json here
-with open(json_map, 'r') as f:
+#### read geojson data
+with open(json_map, "r") as f:
     json_data = json.load(f)
 
-    
-with open(json_map, 'w') as m:
-    json.dump(json_data, m, indent = 4)
 
-##### load json to plot here
-json_map = "assets/maps/geojs-" + conf.set_json_map() + "-mun.json"
+geojson = dl.GeoJSON(
+    data = json_data, 
+    zoomToBoundsOnClick = False,
+    id = "geojson")
 
 #### define function to hover on map
 def get_info(feature = None):
@@ -123,7 +118,7 @@ layout = html.Div(
                         html.Img(
                             src = functions.encode_image(path_to_images + "brazil.png"), className = "header-img"),
                         html.H1(
-                            title,
+                            conf.return_title(),
                             className = "header-title"
                         ),
                         html.A(html.Img(
@@ -170,10 +165,7 @@ layout = html.Div(
                                     zoom = 4,
                                     children = [
                                         dl.TileLayer(),
-                                        dl.GeoJSON(
-                                            url = json_map,
-                                            id = "geojson",
-                                            zoomToBoundsOnClick = False),
+                                        geojson,
                                         html.Div(
                                             children = get_info(), 
                                             id = "info", className = "info",
@@ -198,7 +190,7 @@ layout = html.Div(
                             id = "time-series",
                             children = [
                                 dcc.Graph(
-                                    id = "time-series-cases",
+                                    id = "time-series-graph",
                                     className = "ts-graph"
                                 )
                             ],
@@ -224,13 +216,6 @@ layout = html.Div(
                         html.Br(),
                         html.Br(),
                         html.Label(
-                            ["Selecione uma variável", 
-                             dcc.Dropdown(id = "var-select", className = "side-bar-item", multi = False)],
-                             className = "side-bar-text"
-                             ),
-                        html.Br(),
-                        html.Br(),
-                        html.Label(
                             ["Selecione o intervalo de tempo",
                             dcc.RangeSlider(
                                 id = "range-select",
@@ -250,13 +235,27 @@ layout = html.Div(
                         html.Br(),
                         html.Br(),
                         html.Label(
-                            ["Selecionar covariável 1",
+                            ["Selecione a unidade de tempo",
+                            dcc.RadioItems(
+                                id = "time-unit",
+                                options = [
+                                    {"label": "Dia", "value": "dia"},
+                                    {"label": "Semana", "value": "semana"},
+                                    {"label": "Mês", "value": "mes"},
+                                    {"label": "Ano", "value": "ano"}
+                                ],
+                                value = "dia",
+                                style={'margin-top': '10px'}
+                            )],
+                             className = "side-bar-text"
+                             ),
+                        html.Br(),
+                        html.Br(),
+                        html.Label(
+                            ["Selecionar variável para Donut plot",
                             dcc.Dropdown(
                                 id = "var_cat",
-                                options = [
-                                    {"label": conf.return_cat()[0], "value": conf.return_cat()[0]},
-                                    {"label": conf.return_cat()[1], "value": conf.return_cat()[1]}
-                                ],
+                                options = conf.return_cat(),
                                 value = None,
                                 multi = False
                             ),
@@ -265,20 +264,20 @@ layout = html.Div(
                         ),
                         html.Br(),
                         html.Br(),
-                        html.Label(
-                            ["Selecionar covariável 2",
-                            dcc.Dropdown(
-                                id = "var_num",
-                                options = [
-                                    {"label": conf.return_num()[0], "value": conf.return_num()[0]},
-                                    {"label": conf.return_num()[1], "value": conf.return_num()[1]}
-                                ],
-                                value = None,
-                                multi = False
-                            ),
-                            ],
-                            className = "side-bar-text"
-                        )
+                        # html.Label(
+                        #     ["Selecionar covariável 2",
+                        #     dcc.Dropdown(
+                        #         id = "var_num",
+                        #         options = [
+                        #             # {"label": conf.return_num()[0], "value": conf.return_num()[0]},
+                        #             # {"label": conf.return_num()[1], "value": conf.return_num()[1]}
+                        #         ],
+                        #         value = None,
+                        #         multi = False
+                        #     ),
+                        #     ],
+                        #     className = "side-bar-text"
+                        # )
                         
                     ],
                     className = "side-bar-container"
@@ -293,11 +292,19 @@ layout = html.Div(
             children = [
                 html.Div(
                     children = [
-                        dcc.Graph(
-                            id = "hor_bar",
-                            figure = plot_hor_bar(),
-                            className = "side-graph-item"),
-                        dcc.Graph(id = "donut_plot", className = "side-graph-item")
+                        # dcc.Graph(
+                        #     id = "hor_bar",
+                        #     figure = plot_hor_bar(),
+                        #     className = "side-graph-item"),
+                        html.Label(
+                            ["Donut Plot",
+                                dcc.Graph(
+                                    id = "donut_plot",
+                                    className = "side-graph-item")],
+                            className = "side-bar-text"
+                                    
+
+                        )
                     ],
                     className = "side-graph-container"
 
@@ -311,7 +318,8 @@ layout = html.Div(
             children = [
                 html.A(
                     children = html.I(className="fa fa-github"),
-                    href ="https://github.com/rodriguesmsb/SpatialSUSapp")
+                    href ="#"
+                ),
             ],
             className = "footer"
         )

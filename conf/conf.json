@@ -1,20 +1,25 @@
 {
-    "name": "dasds",
-    "type": "temporal",
-    "id_area": "ID_MN_RESI",
-    "time_col": "DT_NOTIFIC",
+    "name": "SINASC RO",
+    "sistema": "SINASC",
+    "type": "spatio_temporal",
+    "id_area": "CODMUNRES",
+    "time_col": "DTNASC",
     "area": "ro",
-    "var_cat": [
-        "categ\u00f3rica 1",
-        "categ\u00f3rica 2"
+    "var_type": [
+        "SEXO",
+        "RACACOR",
+        "IDANOMAL"
     ],
-    "var_num": [
-        "num\u00e9rica 1",
-        "num\u00e9rica 2"
+    "var_col": [
+        "Categorica",
+        "Categorica",
+        "Categorica"
     ],
-    "time_unit": "Ano",
+    "time_unit": "",
     "time_range": [
-        2015,
-        2017
+        "2015",
+        "2016",
+        "2017",
+        "2018"
     ]
 }

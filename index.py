@@ -20,6 +20,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 
+
 #### define function to hover on map
 def get_info(feature=None):
     header = [html.H4("Municipio")]
@@ -27,7 +28,6 @@ def get_info(feature=None):
         return header + ["Hoover over a state"]
     return header + [html.B(feature["properties"]["name"]), html.Br()]
 #"{:} people / mi".format(feature["properties"]["codmunres"]), html.Sup("2")
-
 
 
 def get_id(feature = None):
@@ -39,16 +39,22 @@ def get_id(feature = None):
 path_to_data = "data/data.csv"
 path_to_json =  "conf/conf.json"
 
+
 conf = functions(conf_file = path_to_json, data = path_to_data)
 
 data = conf.read_data()
 
-ts = data.groupby([conf.return_area(), conf.return_time()]).size().reset_index(name = "count")
+data["date"] = conf.format_date(data[conf.return_time()])
+
+
+ts = data.groupby([conf.return_area(), "date"]).size().reset_index(name = "count")
+
+
 
 
 def plotTs(df):
     cases_trace = go.Scatter(
-        x  = df[conf.return_time()],
+        x  = df["date"],
         y =  df["count"],
         mode ='markers',
         name = "Fitted",
@@ -89,7 +95,7 @@ def info_hover(feature):
     return get_info(feature)
 
 
-@app.callback(Output(component_id = "time-series-cases", component_property = "figure"),
+@app.callback(Output(component_id = "time-series-graph", component_property = "figure"),
               [Input(component_id = "geojson", component_property = "click_feature")])
 def update_Graph(feature):
     filtered_df = ts[ts[conf.return_area()] == get_id(feature)]
@@ -107,6 +113,14 @@ def update_table(feature):
     return [summary.to_dict("records")]
 
 
+# @app.callback(Output(component_id = "time-series-graph", component_property = "figure"),
+#               [Input(component_id = "geojson", component_property = "click_feature"),
+#                Input(component_id = "time-unit", component_property = "value")])
+# def update_ts(feature, selected_unit):
+
+
+
+
 
 @app.callback(Output(component_id = "donut_plot", component_property = "figure"),
               [Input(component_id = "geojson", component_property = "click_feature"),
@@ -118,6 +132,7 @@ def update_donut(feature, selected_var):
     donut = px.pie(data_frame = filtered_df, names = filtered_df[selected_var], values = filtered_df["prop"], hole = .4)
     return donut
     
-    
+  
+
 if __name__ == '__main__':
     app.run_server()

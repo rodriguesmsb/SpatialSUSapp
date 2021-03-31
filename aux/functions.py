@@ -29,11 +29,18 @@ class functions:
             json_map["features"][i]['properties'].update(data)
             return json_map
 
+    def format_date(self, series):
+        if self.conf_file["sistema"] == "SINASC" or self.conf_file["sistema"] == "SIM":
+            date = pd.to_datetime(series, format = "%d%m%Y", errors = "coerce")
+        else:
+            date = pd.to_datetime(series, format = "%Y-%m-%d", errors = "coerce")
+        return date
+
     def return_title(self):
         return self.conf_file["name"]
         
     def read_data(self):
-        #self.data = pd.read_csv(self.data)
+        # self.data = pd.read_csv(self.data)
         return self.data
 
     def return_time(self):
@@ -49,15 +56,14 @@ class functions:
         return self.conf_file["id_area"]
 
     def return_cat(self):
-        return self.conf_file["var_cat"]
-
-    def return_num(self):
-        return self.conf_file["var_num"]
+        results = []
+        for var, var_type in zip(self.conf_file["var_type"], self.conf_file["var_col"]):
+            if var_type == "Categorica":
+                results.append({"label": var, "value": var})
+        return results
     
-    def return_time_unit(self):
-        return self.conf_file["time_unit"]
 
-    
+
 
 
 
