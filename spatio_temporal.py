@@ -44,21 +44,27 @@ max_time = int(conf.return_time_range()[-1])
 
 data = conf.read_data()
 data["date"] = conf.format_date(data[conf.return_time()])
-ts = data.groupby([conf.return_area(), "date"]).size().reset_index(name = "count")
 
-print(data.groupby([conf.return_area()]).size().reset_index(name = "count"))
+#grouping initial data
+ts = data.groupby([conf.return_area(), "date"]).size().reset_index(name = "count")
+cases_per_city = data.groupby([conf.return_area()]).size().reset_index(name = "cases")
 
 
 
 with open(json_map, "r") as f:
     json_data = json.load(f)
 
-for i in range(0,len(json_data["features"])):
+def search_on(id, data):
+    return data.index(int(id))
+    
 
-    cases = {"cases": 0}
+for i in range(0,len(json_data["features"])):
+    codmunres = json_data["features"][i]['properties']["id"][0:6]
+    index_cases = search_on(id = codmunres, data = list(cases_per_city[conf.return_area()].values))
+    cases = {"cases": cases_per_city["cases"][index_cases]}
     json_data["features"][i]['properties'].update(cases)
 
-print(json_data["features"][0]['properties']["cases"])
+
 
 ### Define functions that will be used on callbacks
 
@@ -97,9 +103,13 @@ app.title = "Data visualization"
 
 
 ##options
-classes = [0, 10, 20, 50, 100, 200, 500, 1000]
-colorscale = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026']
-style = dict(weight=2, opacity=1, color='blue', dashArray='3', fillOpacity=0.7)
+quantiles = cases_per_city["cases"].quantile([0,.25,.5,.75, 0.9])
+
+quantiles = [int(n) for n in quantiles.values]
+
+classes = quantiles
+colorscale = ['#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#800026']
+style = dict(weight=2, opacity=1, color='white', dashArray='3', fillOpacity = 0.7)
 
 # Create colorbar.
 ctg = ["{}+".format(cls, classes[i + 1]) for i, cls in enumerate(classes[:-1])] + ["{}+".format(classes[-1])]
