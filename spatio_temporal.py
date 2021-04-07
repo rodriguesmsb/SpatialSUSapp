@@ -406,9 +406,33 @@ def info_hover(feature):
 
 
 @app.callback(Output(component_id = "time-series-graph", component_property = "figure"),
-              [Input(component_id = "geojson", component_property = "click_feature")])
-def update_Graph(feature):
+              [Input(component_id = "geojson", component_property = "click_feature"),
+               Input(component_id = "time-unit", component_property = "value")])
+def update_Graph(feature, time_unit):
     filtered_df = ts[ts[conf.return_area()] == get_id(feature)]
+    if time_unit == "semana":
+        filtered_df["date"] = pd.to_datetime(
+            filtered_df["date"].dt.week.astype(str) +
+            filtered_df["date"].dt.year.astype(str).add("-2"),
+            format = "%W%Y-%w"
+        )
+        filtered_df = filtered_df.groupby([conf.return_area(), "date"])["count"].sum().reset_index(name = "count")
+    elif time_unit == "mes":
+        filtered_df["date"] = pd.to_datetime(
+            "01" +
+            filtered_df["date"].dt.month.astype(str) +
+            filtered_df["date"].dt.year.astype(str),
+            format = "%d%m%Y"
+        )
+        filtered_df = filtered_df.groupby([conf.return_area(), "date"])["count"].sum().reset_index(name = "count")
+    elif time_unit == "ano":
+        filtered_df["date"] = pd.to_datetime(
+            "01" +
+            "01" +
+            filtered_df["date"].dt.year.astype(str),
+            format = "%d%m%Y"
+        )
+        filtered_df = filtered_df.groupby([conf.return_area(), "date"])["count"].sum().reset_index(name = "count")
     return plotTs(df = filtered_df)
 
 
@@ -421,15 +445,6 @@ def update_table(feature):
 
     summary = summary.rename(columns = {"index": " "})
     return [summary.to_dict("records")]
-
-
-# @app.callback(Output(component_id = "time-series-graph", component_property = "figure"),
-#               [Input(component_id = "geojson", component_property = "click_feature"),
-#                Input(component_id = "time-unit", component_property = "value")])
-# def update_ts(feature, selected_unit):
-
-
-
 
 
 @app.callback(Output(component_id = "donut_plot", component_property = "figure"),
