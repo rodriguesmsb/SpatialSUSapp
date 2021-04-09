@@ -1,18 +1,14 @@
 {
-    "name": "SINASC RO",
+    "name": "Analise SINASC",
     "sistema": "SINASC",
-    "type": "spatio_temporal",
+    "type": "temporal",
     "id_area": "CODMUNRES",
     "time_col": "DTNASC",
-    "area": "ro",
+    "area": "ba",
     "var_type": [
-        "SEXO",
-        "RACACOR",
-        "IDANOMAL"
+        "PARTO"
     ],
     "var_col": [
-        "Categorica",
-        "Categorica",
         "Categorica"
     ],
     "time_unit": "",
