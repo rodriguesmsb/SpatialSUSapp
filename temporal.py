@@ -185,29 +185,19 @@ app.layout = html.Div(
                         end_date_placeholder_text = 'MM/DD/YYYY',
                         clearable = True,
                         with_portal = True,
-                        
                 )],
                 className = "date-picker"),
-                html.Div(
-                    children = [
-                        html.Label(
-                    ["Filtrar por grupos",
+
+                html.Label(
+                    ["Filtrar por município",
                     dcc.Dropdown(
                         id = "city_picker",
                         searchable = True,
                         options = return_city(cities_code),
                         value = "all",
-                        placeholder = "Selecione um municipio",
-                    )],
-                ),
-                dcc.Dropdown(
-                        id = "var_picker",
-                        searchable = True,
-                        clearable = True,
-                        placeholder = "Selecione uma variável",
-                    )
-                    ],
-                    className = "dropdown-selectors"
+                        placeholder = "Selecione um municipio"
+                        )],
+                className = "dropdown-selectors"    
                 )
 
             ],
