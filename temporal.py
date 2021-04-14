@@ -22,6 +22,7 @@ from aux.functions import functions
 import json
 import numpy as np
 from datetime import date
+from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 
@@ -61,7 +62,6 @@ ts["weekday"] = ts["date"].dt.day_name()
 ts["month_name"] = ts["month"].apply(lambda x: x.strftime("%b"))
 
 
-
 weekly_series = ts.groupby([conf.return_area(), "week"])["count"].sum().reset_index(name = "count")
 weekly_series = weekly_series.rename(columns = {"week": "date"})
 
@@ -83,22 +83,18 @@ daily_heat_map["weekday"] = pd.Categorical(values = daily_heat_map["weekday"],
                                                          "Quinta", "Sexta", "Sábado", "Domingo"],
                                            ordered = True)
 
-monthly_heat_map =  ts.groupby([conf.return_area(), "month_name", "week"])["count"].sum().reset_index(name = "count")
+#Decomposing time series
+#stl return 
 
-map_month = {"Jan": "Jan", "Feb": "Fev", "Mar": "Mar", "Apr": "Abr", "May": "Maio", "Jun": "Jun",
-             "Jul": "Jul", "Aug": "Ago", "Sep": "Set", "Oct": "Out", "Nov": "Nov", "Dec": "Dez"}
+test = monthly_series.groupby(["date"])["count"].sum().reset_index(name = "count")
 
-monthly_heat_map["week"] = monthly_heat_map["week"].dt.week
-
-monthly_heat_map["month_name"] = monthly_heat_map["month_name"].map(map_month)
-daily_heat_map
-monthly_heat_map["month_name"] = pd.Categorical(values = monthly_heat_map["month_name"],
-                                                categories = ["Jan", "Fev", "Mar", "Abr", "Maio", "Jun", "Jul",
-                                                              "Ago", "Set", "Out", "Nov", "Dez"])
-
-
-
-
+def decomp(df, model = "additive", time = 12):
+    df.index = df["date"]
+    df = df["count"]
+    result = seasonal_decompose(df, model = model, period = time)
+    return {"observed": result.observed, "seasonal": result.seasonal, 
+            "trend": result.trend, "resid": result.resid}
+    
 cities_code = set(ts[conf.return_area()])
 
 def plotTs(df, Title):
@@ -303,15 +299,15 @@ def update_Graph(city):
 
 
 #Change this for trend plot based on stl
-@app.callback(Output(component_id = "monthly_heat_map", component_property = "figure"),
-              [Input(component_id = "city_picker", component_property = "value")])
-def update_Graph(city):
-    if city == "all":
-        new_ts = monthly_heat_map.groupby(["month_name", "week"])["count"].mean().reset_index(name = "count")
-    else:
-        new_ts = monthly_heat_map[monthly_heat_map[conf.return_area()] == int(city)]
-        new_ts = new_ts.groupby(["month_name", "week"])["count"].mean().reset_index(name = "count")
-    return plotHeatmap(new_ts, x = "month_name", y = "week", z = "count", Title = "Incidência Média de Notificações Mensal")
+# @app.callback(Output(component_id = "monthly_heat_map", component_property = "figure"),
+#               [Input(component_id = "city_picker", component_property = "value")])
+# def update_Graph(city):
+#     if city == "all":
+#         new_ts = monthly_heat_map.groupby(["month_name", "week"])["count"].mean().reset_index(name = "count")
+#     else:
+#         new_ts = monthly_heat_map[monthly_heat_map[conf.return_area()] == int(city)]
+#         new_ts = new_ts.groupby(["month_name", "week"])["count"].mean().reset_index(name = "count")
+#     return plotHeatmap(new_ts, x = "month_name", y = "week", z = "count", Title = "Incidência Média de Notificações Mensal")
               
 
 if __name__ == '__main__':
