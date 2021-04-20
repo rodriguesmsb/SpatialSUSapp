@@ -88,14 +88,18 @@ daily_heat_map["weekday"] = pd.Categorical(values = daily_heat_map["weekday"],
 
 test = monthly_series.groupby(["date"])["count"].sum().reset_index(name = "count")
 
-def decomp(df, model = "additive", time = 12):
+
+
+def decomp(df, model = "multiplicative", time = 12):
     df.index = df["date"]
     df = df["count"]
     result = seasonal_decompose(df, model = model, period = time)
     return {"observed": result.observed, "seasonal": result.seasonal, 
             "trend": result.trend, "resid": result.resid}
     
+
 cities_code = set(ts[conf.return_area()])
+
 
 def plotTs(df, Title):
     cases_trace = go.Scatter(
@@ -228,7 +232,7 @@ app.layout = html.Div(
                             className = "heat-series"
                         ),
                         html.Div(
-                            [dcc.Graph(id = "monthly_heat_map")],
+                            [dcc.Graph(id = "series_decomp")],
                             className = "monthly-grouped"
                         )
                         
@@ -289,16 +293,33 @@ def update_Graph(city):
 
 
 #Change this for trend plot based on stl
-# @app.callback(Output(component_id = "monthly_heat_map", component_property = "figure"),
-#               [Input(component_id = "city_picker", component_property = "value")])
-# def update_Graph(city):
-#     if city == "all":
-#         new_ts = monthly_heat_map.groupby(["month_name", "week"])["count"].mean().reset_index(name = "count")
-#     else:
-#         new_ts = monthly_heat_map[monthly_heat_map[conf.return_area()] == int(city)]
-#         new_ts = new_ts.groupby(["month_name", "week"])["count"].mean().reset_index(name = "count")
-#     return plotHeatmap(new_ts, x = "month_name", y = "week", z = "count", Title = "Incidência Média de Notificações Mensal")
-              
+@app.callback(Output(component_id = "series_decomp", component_property = "figure"),
+              [Input(component_id = "city_picker", component_property = "value")])
+def update_Graph(city, time = 365, compartiment = "trend"):
 
+    if city == "all":
+        new_ts  = ts.groupby(["date"])["count"].sum().reset_index(name = "count")
+        new_ts = new_ts[["date", "count"]]
+        ts_decomp = decomp(new_ts, model = "multiplicative", time = time)
+        ts_decomp = pd.DataFrame.from_dict(ts_decomp)
+        ts_decomp["date"] = ts_decomp.index
+
+    else:
+        new_ts = ts[ts[conf.return_area()] == int(city)]
+        new_ts  = new_ts.groupby(["date"])["count"].sum().reset_index(name = "count")
+        new_ts = new_ts[["date", "count"]]
+        ts_decomp = decomp(new_ts, model = "multiplicative", time = time)
+        ts_decomp = pd.DataFrame.from_dict(ts_decomp)
+        ts_decomp["date"] = ts_decomp.index
+
+    if compartiment == "trend":
+        ts_decomp["count"] = ts_decomp["trend"]
+        return(plotTs(ts_decomp, Title = "Decomposição STL"))
+
+    
+        
+       
+
+            
 if __name__ == '__main__':
     app.run_server(debug=True)
