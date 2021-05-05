@@ -202,6 +202,20 @@ app.layout = html.Div(
                         placeholder = "Selecione um municipio"
                         )],
                 className = "dropdown-selectors"    
+                ),
+                html.Label(
+                    ["Componente da série",
+                    dcc.Dropdown(
+                        id = "component-picker",
+                        searchable = False,
+                        options = [
+                            {"label": "Sazonalidade", "value": "Sazonalidade"},
+                            {"label": "Tendência", "value": "Tendência"},
+                            {"label": "Resíduo", "value": "Resíduo"}
+                        ],
+                        value = "Sazonalidade"
+                    )],
+                className = "dropdown-stl"
                 )
 
             ],
@@ -311,7 +325,6 @@ def update_Graph(city, time = 365, compartiment = "trend"):
         ts_decomp = decomp(new_ts, model = "multiplicative", time = time)
         ts_decomp = pd.DataFrame.from_dict(ts_decomp)
         ts_decomp["date"] = ts_decomp.index
-
     if compartiment == "trend":
         ts_decomp["count"] = ts_decomp["trend"]
         return(plotTs(ts_decomp, Title = "Decomposição STL"))

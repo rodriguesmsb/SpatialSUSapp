@@ -37,12 +37,17 @@
 
 .date-picker{
     display: grid;
-    grid-column: 4 / span 2;
+    grid-column: 2 / span 2;
 }
 
 .dropdown-selectors{
     display: grid;
-    grid-column: 8/ span 2;
+    grid-column: 6/ span 2;
+}
+
+.dropdown-stl{
+    display: grid;
+    grid-column: 10/ span 2;
 }
 
 .time-series-hline-container{
